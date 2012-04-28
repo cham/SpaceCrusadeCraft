@@ -124,7 +124,7 @@ function(MazeGen, MapDecorator, TileRenderer, AStarFloodFill) {
     AStarFloodFill.start({
         map: map,
         peak: ppos,
-        interval: 20,
+        interval: 40,
         maxRange: 10,
         doneOne: function(){
           //if(!frontloading){return;}
@@ -170,8 +170,8 @@ function(MazeGen, MapDecorator, TileRenderer, AStarFloodFill) {
       var newpos = {x:0,y:0},
           offset = {x:0,y:0};
 
-      offset.x = poff.x + ((moving.x) * 3);
-      offset.y = poff.y + ((moving.y ) * 3);
+      offset.x = poff.x + ((moving.x) * 4);
+      offset.y = poff.y + ((moving.y ) * 4);
       newpos.x = ppos.x;
       newpos.y = ppos.y;
 
@@ -204,7 +204,7 @@ function(MazeGen, MapDecorator, TileRenderer, AStarFloodFill) {
 
       ppos = newpos;
       poff = offset;
-      movetimer = setTimeout(function(){moveplayer();},30);
+      movetimer = setTimeout(function(){moveplayer();},40);
     }
     moveplayer();
 });
