@@ -88,61 +88,55 @@ function(MazeGen, MapDecorator, TileRenderer, AStarFloodFill) {
         startPos = MazeGen.getStartCoords();
 
     TileRenderer.setEl($('#map'));
-    TileRenderer.setDimensions(720,480);
-    TileRenderer.setPlayer(MazeGen.getGoalCoords());
+    TileRenderer.setDimensions(720,400);
+    TileRenderer.setPlayerPosition({
+      coords:MazeGen.getGoalCoords()
+    });
 
     TileRenderer.setTiles(MapDecorator.decorate(MazeGen.map));
+    TileRenderer.updateAllTiles();
     TileRenderer.render();
 
-    var ppos = {x:MazeGen.getGoalCoords().x, y:MazeGen.getGoalCoords().y};
+    var ppos = {x:MazeGen.getGoalCoords().x, y:MazeGen.getGoalCoords().y},
+        poff = {x:0,y:0},
+        moving = {x:0,y:0};
 
     $('.controls button').click(function(e){
       var $target = $(e.target),
           x = $target.data('x'),
-          y = $target.data('y'),
-          newpos = {x:0,y:0};
-          
+          y = $target.data('y');
+
       e.preventDefault();
       e.stopPropagation();
-      
-      if(!x&&!y){
-        return;
-      }
 
-      newpos.x = ppos.x + (x || 0);
-      newpos.y = ppos.y + (y || 0);
-
-      if(map[newpos.y][newpos.x]!=='w'){
-        return;
-      }
-
-      TileRenderer.setPlayer(newpos);
-      TileRenderer.render();
-      ppos = newpos;
-    
+      moving.x = x || 0;
+      moving.y = y || 0;
     });
 
-/*
-    var moving = false,
-        frontloading = true,
+
+    var frontloading = true,
         numrooms = map[0].length * map.length,
         loadcount = 0,
         $loading = $('.loadbar'),
         $status = $('.status');
 
+
     AStarFloodFill.start({
         map: map,
-        peak: startPos,
-        interval: 15,
+        peak: ppos,
+        interval: 20,
         maxRange: 10,
         doneOne: function(){
-          if(!frontloading){return;}
+          //if(!frontloading){return;}
           $status.text('Filling tiles...');
           loadcount++;
-          var percloaded = ((loadcount/this.mapdims.numcells)* 5500) | 0;
+
+          var percloaded = ((loadcount/this.spiralSeq.length) * 720 ) | 0;
           $loading.width(percloaded);
         },
         doneAll: function(){
+          loadcount = 0;
+          /*
           function move(){
             var moveto = AStarFloodFill.lowestNeighborTo({x:ppos.x,y:ppos.y});
 
@@ -163,8 +157,54 @@ function(MazeGen, MapDecorator, TileRenderer, AStarFloodFill) {
             frontloading = false;
             $loading.width(720);
             $status.text('Moving to goal');
-          }
+          }/**/
         }
     });/**/
 
+
+
+
+
+    var movetimer;
+    function moveplayer(){
+      var newpos = {x:0,y:0},
+          offset = {x:0,y:0};
+
+      offset.x = poff.x + ((moving.x) * 3);
+      offset.y = poff.y + ((moving.y ) * 3);
+      newpos.x = ppos.x;
+      newpos.y = ppos.y;
+
+      if(offset.x>24){
+        offset.x -= 48;
+        newpos.x += 1;
+      }else if(offset.x<-24){
+        offset.x += 48;
+        newpos.x -= 1;
+      }
+      if(offset.y>24){
+        offset.y -= 48;
+        newpos.y += 1;
+      }else if(offset.y<-24){
+        offset.y += 48;
+        newpos.y -= 1;
+      }
+
+      if(map[newpos.y][newpos.x]!=='w'){
+        return;
+      }
+
+      TileRenderer.setPlayerPosition({
+        coords: newpos,
+        offset: offset
+      });
+      AStarFloodFill.setPeak(newpos);
+      TileRenderer.updateAllTiles();
+      TileRenderer.render();
+
+      ppos = newpos;
+      poff = offset;
+      movetimer = setTimeout(function(){moveplayer();},30);
+    }
+    moveplayer();
 });

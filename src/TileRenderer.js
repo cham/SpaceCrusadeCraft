@@ -18,8 +18,11 @@ define(function(){
     context: context,
     viewport: {
       tileswide: 0,
-      tileshigh: 0,
-      player: {x:0,y:0}
+      tileshigh: 0
+    },
+    playerposition: {
+      coords: {x:0,y:0},
+      offset: {x:0,y:0}
     },
     options: {
       tilewidth: 48,
@@ -68,10 +71,15 @@ define(function(){
       this.tiles = t;
     },
 
-    setPlayer: function(coords){
-      this.viewport.player.x = coords.x;
-      this.viewport.player.y = coords.y;
+    setPlayerPosition: function(posinfo){
+      _(this.playerposition).extend(posinfo); // {coords:{x:0,y:0}, offset:{x:0,y:0}}
+    },
 
+    setCanvasOffset: function(){
+      $(this.canvas).css({
+        top: -this.playerposition.offset.y - this.options.tileheight,
+        left: -this.playerposition.offset.x - this.options.tilewidth
+      });/**/
     },
 
     getCenter: function(){
@@ -88,8 +96,8 @@ define(function(){
     drawTile: function(coords){
       var transformCenter = this.getCenter(),
           pixelcursor = {
-            x: (coords.x - this.viewport.player.x + transformCenter.x) * this.options.tilewidth,
-            y: (coords.y - this.viewport.player.y + transformCenter.y) * this.options.tileheight
+            x: (coords.x - this.playerposition.coords.x + transformCenter.x) * this.options.tilewidth,
+            y: (coords.y - this.playerposition.coords.y + transformCenter.y) * this.options.tileheight
           },
           tiletype = '';
 
@@ -130,8 +138,8 @@ define(function(){
     drawPlayer: function(){
       var center = this.getCenter(),
           pixelcursor = {
-            x: center.x * this.options.tilewidth,
-            y: center.y * this.options.tileheight
+            x: center.x * this.options.tilewidth + this.playerposition.offset.x,
+            y: center.y * this.options.tileheight + this.playerposition.offset.y
           };
 
       this.context.fillStyle = '#9999FF';
@@ -143,24 +151,29 @@ define(function(){
       );
     },
 
-    render: function(){
+    updateAllTiles: function(){
       var self = this,
           transformCenter = this.getCenter();
-          
-      _(self.viewport.tileshigh+2).times(function(y){
-        _(self.viewport.tileswide+2).times(function(x){
-          var tilex = x + self.viewport.player.x - transformCenter.x - 1,
-              tiley = y + self.viewport.player.y - transformCenter.y - 1;
+      self.renderqueue = [];
+      _(self.viewport.tileshigh+3).times(function(y){
+        _(self.viewport.tileswide+3).times(function(x){
+          var tilex = x + self.playerposition.coords.x - transformCenter.x - 1,
+              tiley = y + self.playerposition.coords.y - transformCenter.y - 1;
           self.renderqueue.push({x: tilex, y: tiley});
         });
       });
+    },
 
-      _(this.renderqueue).each(function(tilecoords){
+    render: function(){
+      var self = this;
+
+      _(this.renderqueue).chain().uniq().each(function(tilecoords){
         self.drawTile(tilecoords);
       });
 
       this.drawPlayer();
 
+      this.setCanvasOffset();
     }
   };
 

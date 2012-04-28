@@ -268,9 +268,7 @@ define(function(){
 				boxlength: w > h ? w : h,
 				numcells: this.map[0].length * this.map.length
 			};
-			this.spiralSeq = _(spiral(this.mapdims.boxlength)).filter(function(coord){
-				return self.tileInMap(coord) && self.walkableTile(coord);
-			});
+			this.spiralSeq = this.makeSeq();
 			this.weightmap = _(this.map).reduce(function(memo,item){
 				var arr = [];
 				_(self.mapdims.width).times(function(){
@@ -279,6 +277,16 @@ define(function(){
 				memo.push(arr);
 				return memo;
 			},[]);
+		},
+
+		makeSeq: function(){
+			var self = this;
+
+			return _(spiral(this.mapdims.boxlength)).filter(function(coord){
+				return 	Math.abs(coord.x-self.peak.x) < 8 &&
+						Math.abs(coord.y-self.peak.y) < 5 &&
+						self.tileInMap(coord) && self.walkableTile(coord)
+			});	
 		},
 
 		clearProcessedCache: function(){
@@ -307,7 +315,8 @@ define(function(){
 				return;
 			}
 
-			this.peak = coords;
+			this.peak.x = coords.x;
+			this.peak.y = coords.y;
 			this.setPeakWeight();
 		},
 
@@ -331,6 +340,7 @@ define(function(){
 			function runFill(){
 				var drawcount = 0;
 
+				self.spiralSeq = self.makeSeq();
 				self.clearProcessedCache();
 				_(self.spiralSeq).each(function(coords,i){
 
@@ -460,6 +470,7 @@ define(function(){
 			this.setCallbacks(options.doneOne, options.doneAll);
 
 		    this.setMap(options.map);
+
 			this.setPeak(options.peak);
 
 			this.startFill();
