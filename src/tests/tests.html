@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+  <title>Jasmine Spec Runner</title>
+
+  <link rel="shortcut icon" type="image/png" href="lib/jasmine-1.1.0/jasmine_favicon.png">
+
+  <link rel="stylesheet" type="text/css" href="lib/jasmine-1.1.0/jasmine.css">
+  <script type="text/javascript" src="lib/jasmine-1.1.0/jasmine.js"></script>
+  <script type="text/javascript" src="lib/jasmine-1.1.0/jasmine-html.js"></script>
+  <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="../lib/require.js"></script>
+  <script type="text/javascript" src="../lib/underscore-min.js"></script>
+  <!-- ... -->
+
+  <script type="text/javascript">
+
+    // This is key!
+    require.config({
+      baseUrl: '../'
+    });
+
+    require([
+      'TileRenderer',
+      '../src/tests/spec/TileRenderer.spec'
+    ],
+      function(TileRenderer) {
+        window.TileRenderer = TileRenderer;
+
+        var jasmineEnv = jasmine.getEnv(),
+            htmlReporter = new jasmine.HtmlReporter();
+
+        jasmineEnv.addReporter(htmlReporter);
+        jasmineEnv.updateInterval = 1000;
+
+        jasmineEnv.specFilter = function(spec) {
+          return htmlReporter.specFilter(spec);
+        };
+
+        $(function() {
+          jasmine.getEnv().execute();
+        });
+      });
+
+  </script>
+
+</head>
+
+<body>
+</body>
+</html>

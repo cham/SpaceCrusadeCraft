@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>SCC</title>
+  <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+  <script src="src/lib/underscore-min.js"></script>
+  <script data-main="src/main" src="src/lib/require.js"></script>
+  <style>
+  	body {
+  		font-size: 11px;
+  		font-family: sans-serif;
+  		color: #333;
+  	}
+  	.loadbar-box , .loadbar {
+  		width: 720px;
+  		height: 5px;
+  		overflow: hidden;
+  	}
+  	.loadbar-box {
+  		border: 1px solid #333;
+  		margin-top: 10px;
+  	}
+  	.loadbar {
+  		width: 1px;
+  		background: #333;
+  	}
+
+    .controls {
+      position: absolute;
+      top: 275px;
+      left: 20px;
+      opacity: 0.7;
+      background: transparent;
+    }
+
+  	.controls button {
+  		float: left;
+  		display: block;
+  		width: 80px;
+  		height: 60px;
+      margin: 3px;
+      padding: 0;
+      -webkit-border-radius: 20px;
+      -moz-border-radius: 20px;
+      border-radius: 20px;
+      background: black;
+      color: white;
+      background: -webkit-linear-gradient(top, black, #444, black, black);
+  	}
+  	.controls #w , .controls #sw {
+  		clear: left;
+  	}
+  	#map {
+  		position: relative;
+      overflow: hidden;
+  	}
+  	#map canvas {
+  		position: absolute;
+  	}
+
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div class="loadbar-box"><div class="loadbar"></div></div>
+  <div class="status"></div>
+  <div class="controls">
+  	<button id="nw" data-y="-1" data-x="-1">NW</button>
+  	<button id="n" data-y="-1" data-x="0">N</button>
+  	<button id="ne" data-y="-1" data-x="1">NE</button>
+  	<button id="w" data-y="0" data-x="-1">W</button>
+  	<button> </button>
+  	<button id="e" data-y="0" data-x="1">E</button>
+  	<button id="sw" data-y="1" data-x="-1">SW</button>
+  	<button id="s" data-y="1" data-x="0">S</button>
+  	<button id="se" data-y="1" data-x="1">SE</button>
+  </div>
+</body>
+</html>
