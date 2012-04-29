@@ -276,7 +276,7 @@ define(function(){
         padX = (((this.width - (roomsPerRow * this.widestRoom)) / roomsPerRow) | 0),
         padY = (((this.height - (len * this.tallestRoom)) / len) | 0) + 1,
         self = this,
-        roomchancePer = ((100 / (roomsPerRow * len)) | 0)*0.04,
+        roomchancePer = ((100 / (roomsPerRow * len)) | 0)*0.05,
         roomchance = 1,
         numrooms = 0,
         exitCount = 0;

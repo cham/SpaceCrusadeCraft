@@ -144,10 +144,10 @@ define(function(){
 
       this.context.fillStyle = '#9999FF';
       this.context.fillRect(
-        pixelcursor.x,
-        pixelcursor.y,
-        this.options.tilewidth,
-        this.options.tileheight
+        pixelcursor.x+10, // TODO
+        pixelcursor.y+10,
+        this.options.tilewidth-20,
+        this.options.tileheight-20
       );
     },
 
