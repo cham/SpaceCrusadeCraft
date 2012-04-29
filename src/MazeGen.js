@@ -276,7 +276,7 @@ define(function(){
         padX = (((this.width - (roomsPerRow * this.widestRoom)) / roomsPerRow) | 0),
         padY = (((this.height - (len * this.tallestRoom)) / len) | 0) + 1,
         self = this,
-        roomchancePer = ((100 / (roomsPerRow * len)) | 0)*0.05,
+        roomchancePer = ((100 / (roomsPerRow * len)) | 0)*0.02,
         roomchance = 1,
         numrooms = 0,
         exitCount = 0;
@@ -291,7 +291,7 @@ define(function(){
         while(roomsThisRow--){
           roomchance+=roomchancePer;
           if(Math.random() < roomchance){
-            roomchance = roomchancePer;
+            roomchance = 1;//roomchancePer;
             numrooms++;
             x = (roomsThisRow * this.widestRoom) + (padX * roomsThisRow+1) | 0;
             roomY = baseY + ((Math.random()*(padY-1)) | 0);

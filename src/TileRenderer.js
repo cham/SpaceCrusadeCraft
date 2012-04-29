@@ -25,15 +25,23 @@ define(function(){
       offset: {x:0,y:0}
     },
     options: {
-      tilewidth: 48,
-      tileheight: 48
+      tilewidth: 40,
+      tileheight: 40
     },
     tiles: [],
     renderqueue: [],
 
+    crappysheet: null,
+
     /*
      * initialisation methods
      */
+    crappyTilesetSimulator: function(sheeturl,cb){
+      this.crappysheet = new Image();
+      this.crappysheet.onload = cb;
+      this.crappysheet.src = sheeturl;
+    },
+
     setEl: function($container){
       this.$el = $container;
       this.$el.html(canvas);
@@ -99,40 +107,33 @@ define(function(){
             x: (coords.x - this.playerposition.coords.x + transformCenter.x) * this.options.tilewidth,
             y: (coords.y - this.playerposition.coords.y + transformCenter.y) * this.options.tileheight
           },
-          tiletype = '';
+          tiledef = {
+            fillStyle: '#333333'
+          },
+          self = this;
 
       if(coords.y>0 && coords.x>0 && coords.y<this.tiles.length && coords.x<this.tiles[0].length){
-        tiletype = this.tiles[coords.y][coords.x];
+        tiledef = this.tiles[coords.y][coords.x];
       }
 
-      switch(tiletype){
-        case 'f0':
-          this.context.fillStyle = "#33FF33";
-          break;
-        case 'f1':
-          this.context.fillStyle = "#CCFFCC";
-          break;
-        case 'f':
-          this.context.fillStyle = "#99FF99";
-          break;
-        case 'w0':
-          this.context.fillStyle = "#000000";
-          break;
-        case 'W':
-          this.context.fillStyle = "#333333";
-          break;
-        default:
-          this.context.fillStyle = "#000000";
+      this.context.fillStyle = tiledef.fillStyle;
+
+      if(!tiledef.spriteinfo || !_.isNumber(tiledef.spriteinfo.x)){
+        this.context.fillRect(
+          pixelcursor.x,
+          pixelcursor.y,
+          this.options.tilewidth,
+          this.options.tileheight
+        );
+      }else{
+        self.context.drawImage(
+          self.crappysheet,
+          tiledef.spriteinfo.x, tiledef.spriteinfo.y,
+          self.options.tilewidth, self.options.tilewidth,
+          pixelcursor.x , pixelcursor.y,
+          self.options.tilewidth, self.options.tilewidth
+        );
       }
-
-      this.context.fillRect(
-        pixelcursor.x,
-        pixelcursor.y,
-        this.options.tilewidth,
-        this.options.tileheight
-      );
-
-//      ctx.drawImage(spriteInfo.canvas, spriteInfo.x, spriteInfo.y , spriteInfo.tiledims.x, spriteInfo.tiledims.y, ox  + offset.x , oy  + offset.y , dx - ox , dy - oy );
     },
 
     drawPlayer: function(){

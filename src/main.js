@@ -89,11 +89,14 @@ function(MazeGen, MapDecorator, TileRenderer, AStarFloodFill) {
 
 
 
+    TileRenderer.crappyTilesetSimulator('img/tileset.png',function(){
+
     TileRenderer.setEl($('#map'));
-    TileRenderer.setDimensions(480,300);
+    TileRenderer.setDimensions(480,280);
     TileRenderer.setPlayerPosition({
       coords:MazeGen.getGoalCoords()
     });
+
     TileRenderer.setTiles(MapDecorator.decorate(MazeGen.map));
     TileRenderer.updateAllTiles();
     TileRenderer.render();
@@ -189,18 +192,18 @@ function(MazeGen, MapDecorator, TileRenderer, AStarFloodFill) {
       newpos.x = ppos.x;
       newpos.y = ppos.y;
 
-      if(offset.x>24){
-        offset.x -= 48;
+      if(offset.x>20){
+        offset.x -= 40;
         newpos.x += 1;
-      }else if(offset.x<-24){
-        offset.x += 48;
+      }else if(offset.x<-20){
+        offset.x += 40;
         newpos.x -= 1;
       }
-      if(offset.y>24){
-        offset.y -= 48;
+      if(offset.y>20){
+        offset.y -= 40;
         newpos.y += 1;
-      }else if(offset.y<-24){
-        offset.y += 48;
+      }else if(offset.y<-20){
+        offset.y += 40;
         newpos.y -= 1;
       }
 
@@ -223,4 +226,6 @@ function(MazeGen, MapDecorator, TileRenderer, AStarFloodFill) {
     moveplayer();
 
     document.body.scrollTop = 100;
+
+  });
 });
